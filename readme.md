@@ -37,6 +37,6 @@ A small, React higher-order component which takes any react component as an argu
 
 ## Example
 
-![Heat](/files/heat.gif)
+![Heat](files/heat.gif)
 
 
