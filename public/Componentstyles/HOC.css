@@ -1,0 +1,27 @@
+.flex-container{
+	display: flex;
+	flex-direction: column;
+  justify-content: flex-start;
+  position: relative;
+}
+
+.dropdown{
+  z-index: 5;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+}
+
+.parent{
+  position: relative;
+}
+
+.HOCWrapper{
+	background: rgba(128,128,128,0.6);
+	z-index: 1;
+	position: absolute;
+	height: 100%;
+	top: 0px;
+	left: 0px;
+	width: 100%;
+}

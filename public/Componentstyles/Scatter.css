@@ -1,0 +1,35 @@
+.clickData:hover text{
+	display: inline;
+	position: absolute;
+	z-index: 9999;
+}
+
+ .HOCSvgWrapper {
+  width: 100%;
+  height: 100%;
+  position: relative;
+ }
+
+
+ .selectOption{
+  z-index: 99;
+  position: 'absolute';
+  top: '0px';
+  left: '0px';
+ }
+
+ .HOCSvg{
+	position:absolute;
+	width: 100%;
+	height: 100%;
+	display: block;
+}
+
+ .referrerText{
+  text-anchor: middle;
+  font-size: '15px';
+  fill: black;
+}
+
+
+
