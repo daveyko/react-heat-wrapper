@@ -1,8 +1,9 @@
 module.exports = {
-	entry: './src/HOC.jsx',
+	entry: './src/Components/HOC.jsx',
 	output: {
 		path: __dirname,
-		filename: './public/bundle.js'
+		filename: './public/bundle.js',
+		libraryTarget: 'umd'
 	},
 	devtool: 'source-map',
 	module: {

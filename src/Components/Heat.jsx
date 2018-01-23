@@ -1,6 +1,7 @@
 import React from 'react'
 const d3 = require('d3')
 const _ = require('lodash')
+import style from '../../public/Componentstyles/Heat.css'
 
 class HOCHeat extends React.Component {
 	constructor(props){
@@ -109,7 +110,7 @@ class HOCHeat extends React.Component {
     //mapping over aggregate clicks to create an svg rectangle for each grouping of clicks
 		let heatmap = aggregateClicks.map((click, i) => {
 			return (
-				<g key = {i} className = "clickData">
+				<g key = {i} className = {style.clickData}>
 					<rect
 						x = {xScale(click.col)}
 						y = {yScale(click.row)}
@@ -121,19 +122,19 @@ class HOCHeat extends React.Component {
 						strokeWidth = "1"
 					/>
 					<text x = {xScale(click.col)} y = {yScale(click.row) + 20}>
-						<tspan x = {xScale(click.col) + 30} y = {yScale(click.row) + 20} className = "countText">{totalClicks ? Number((click.count / totalClicks) * 100) < 1 ? '<1%' : Number((click.count / totalClicks) * 100).toFixed(1) + '%' : '0%'}</tspan>
+						<tspan x = {xScale(click.col) + 30} y = {yScale(click.row) + 20} className = {style.countText}>{totalClicks ? Number((click.count / totalClicks) * 100) < 1 ? '<1%' : Number((click.count / totalClicks) * 100).toFixed(1) + '%' : '0%'}</tspan>
 					</text>
 				</g>
 			)
     })
 
 		return (
-			<div className = "HOCSvgWrapper" ref = {size => this.size = size}>
-				<select className = "selectOption" onChange = {this.props.removeGraph}>
+			<div className = {style.HOCSvgWrapper} ref = {size => this.size = size}>
+				<select className = {style.selectOption} onChange = {this.props.removeGraph}>
 					<option selected>Select Option</option>
 					<option>Close</option>
 				</select>
-				<svg className = "HOCSvg">
+				<svg className = {style.HOCSvg}>
 					{heatmap}
 				</svg>
 			</div>
