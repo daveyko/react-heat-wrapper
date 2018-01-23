@@ -39,3 +39,4 @@ A small, React higher-order component which takes any react component as an argu
 
 ![Alt Text](heat.gif)
 
+
