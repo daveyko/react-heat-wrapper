@@ -13,9 +13,9 @@
 
  .selectOption{
   z-index: 99;
-  position: 'absolute';
-  top: '0px';
-  left: '0px';
+  position: absolute;
+  top: 0px;
+  left: 0px;
  }
 
  .HOCSvg{
@@ -25,4 +25,9 @@
 	display: block;
 }
 
+.countText{
+  text-anchor: end;
+  fill: white;
+  font-size: 20px;
+}
 

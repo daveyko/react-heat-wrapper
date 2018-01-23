@@ -188,7 +188,7 @@ class Scatterplot extends React.Component {
 									<label>Show All</label>
 								</div>
 							</div>
-						</Popout> : false
+						</Popout> : null
 					}
 				</div>
 				<select className = {style.selectOption} onChange = {this.selectOption}>
