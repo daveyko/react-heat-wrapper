@@ -39,7 +39,7 @@ A small, React higher-order component which takes any react component as an argu
 
 <br />
 <p align="center">
-  <img src="heat.gif" height="550">
+  <img src="heat.gif" height="300">
 </p>
 <br />
 
