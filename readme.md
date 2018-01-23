@@ -35,6 +35,8 @@ A small, React higher-order component which takes any react component as an argu
     To activate the heatmap, type 'viewHeatMap(id)' in the console, and select from the options that appear to the top left of your wrapped component.
 
 
-## Tests
+## Example
 
-  `npm test`
+ ![Alt Text](/Users/davidko/Downloads/heat.gif)
+
+
