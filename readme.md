@@ -37,6 +37,10 @@ A small, React higher-order component which takes any react component as an argu
 
 ## Example
 
-![Heat](files/heat.gif)
+<br />
+<p align="center">
+  <img src="heat.gif" height="550">
+</p>
+<br />
 
 
