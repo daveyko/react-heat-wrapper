@@ -37,6 +37,6 @@ A small, React higher-order component which takes any react component as an argu
 
 ## Example
 
- ![Alt Text](/Users/davidko/Downloads/heat.gif)
+ ![Alt Text](file:///Users/davidko/Downloads/heat.gif)
 
 
