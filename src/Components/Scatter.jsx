@@ -22,7 +22,7 @@ class Scatterplot extends React.Component {
 		this.selectOption = this.selectOption.bind(this)
 		this.promisifySetState = this.promisifySetState.bind(this)
 	}
-
+	//allows chaining of setState instead of callbacks
 	promisifySetState(state) {
 		return new Promise(resolve => {
 			this.setState(state, resolve)
