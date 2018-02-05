@@ -1,12 +1,10 @@
 {
   "name": "react-heat-wrapper",
-  "version": "0.1.3",
+  "version": "0.1.4",
   "description": "",
   "main": "public/bundle.js",
   "scripts": {
-    "testHOC": "mocha --require mock-local-storage ./tests/HOC.spec.js --watch --compilers js:babel-register",
-    "testScatter": "mocha --require mock-local-storage ./tests/Scatter.spec.js --watch --compilers js:babel-register",
-    "testHeat": "mocha --require mock-local-storage ./tests/Heat.spec.js --watch --compilers js:babel-register",
+    "test": "webpack -w --config webpack.test.js & open tests/test.html",
     "build-client": "webpack"
   },
   "keywords": [],
@@ -14,7 +12,9 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.17.1",
+    "babel-polyfill": "^6.26.0",
     "d3": "^4.12.2",
+    "ignore-loader": "^0.1.2",
     "lodash": "^4.17.4",
     "react": "^16.2.0",
     "react-dom": "^16.2.0",

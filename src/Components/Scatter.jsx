@@ -20,6 +20,13 @@ class Scatterplot extends React.Component {
 		this.showAll = this.showAll.bind(this)
 		this.onClose = this.onClose.bind(this)
 		this.selectOption = this.selectOption.bind(this)
+		this.promisifySetState = this.promisifySetState.bind(this)
+	}
+	//allows chaining of setState instead of callbacks
+	promisifySetState(state) {
+		return new Promise(resolve => {
+			this.setState(state, resolve)
+		})
 	}
 
   //When passed props changes, we need to trigger a re-render of the scatterplot. The passed props may be this.props.onResizeClicks when the viewport has been modified, otherwise it will be this.props.clicks
@@ -80,10 +87,11 @@ class Scatterplot extends React.Component {
 	filterUrl(e){
 		let clicks = this.props.clicks || this.props.filterClicks(this.props.onResizeClicks, this.size, window.innerWidth)
 		if (e.target.checked){
-			this.setState({
+			return this.promisifySetState({
 				urls: this.state.urls.concat(e.target.value),
-			}, () => {
-				this.setState({
+			})
+			.then(() => {
+				return this.promisifySetState({
 					clicks: clicks.filter(click => {
 						return this.state.urls.filter(url => {
 							return click.referrer.includes(url)
@@ -91,13 +99,15 @@ class Scatterplot extends React.Component {
 					})
 				})
 			})
+			.catch(console.error)
 		} else {
-      this.setState({
+      return this.promisifySetState({
 				urls: this.state.urls.filter(url => {
 					return url !== e.target.value
 				})
-			}, () => {
-				this.setState({
+			})
+			.then(() => {
+				return this.promisifySetState({
 					clicks: clicks.filter(click => {
 						return this.state.urls.filter(url => {
 							return click.referrer.includes(url)
@@ -105,6 +115,7 @@ class Scatterplot extends React.Component {
 					})
 				})
 			})
+			.catch(console.error)
 		}
 	}
 

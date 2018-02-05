@@ -1,9 +1,13 @@
 import React from 'react'
-import {jsdom, window, global, Enzyme} from './index'
-import HOC from '../src/HOC.jsx'
-import Scatter from '../src/Scatter.jsx'
-import chai, {expect} from 'chai';
-import {shallow, mount} from 'enzyme';
+import Enzyme, {shallow} from 'enzyme';
+import chai, {expect} from 'chai'
+import sinon from 'sinon';
+import sinonChai from 'sinon-chai'
+import Adapter from 'enzyme-adapter-react-16';
+Enzyme.configure({ adapter: new Adapter(), disableLifecycleMethods: true });
+import axios from 'axios'
+import HOC from '../src/Components/HOC.jsx'
+import Scatter from '../src/Components/Scatter.jsx'
 
 const ComponentToWrap = () => {
   return (
@@ -12,50 +16,72 @@ const ComponentToWrap = () => {
 }
 let testAPI = '/api/clicks'
 let WrappedComponent = HOC(testAPI, 1)(ComponentToWrap)
+let wrappedComponentClicksState = [
+  {
+    x: 200,
+    y: 200,
+    clientwidth: window.innerWidth,
+    clientheight: window.innerHeight,
+    referrer: 'www.google.com',
+    page: window.location.pathname
+  },
+  {
+    x: 400,
+    y: 400,
+    clientwidth: window.innerWidth,
+    clientheight: window.innerHeight,
+    referrer: 'www.reddit.com',
+    page: window.location.pathname
+  },
+  {
+    x: 750,
+    y: 750,
+    clientwidth: window.innerWidth,
+    clientheight: window.innerHeight,
+    referrer: 'www.espn.com',
+    page: window.location.pathname
+  }
+]
 
-describe('<Scatter /> initial click state', () => {
-  let wrappedComponent
-  let wrappedComponentClicksState
-  let container
-  beforeEach(() => {
-    wrappedComponent = shallow(<WrappedComponent />)
-    container = wrappedComponent.find('.flex-container')
-    wrappedComponent.setState({graph: 'Scatter'})
-    wrappedComponentClicksState = [
+describe('<Scatter /> filter function', () => {
+  let renderedElement = shallow(<Scatter clicks = {wrappedComponentClicksState} />)
+  let renderedInstance = renderedElement.instance()
+  let sandbox = sinon.sandbox.create()
+
+  before(() => {
+    chai.use(sinonChai)
+  })
+
+  afterEach(() => {
+    sandbox.restore()
+  })
+
+  it('filterUrl sets both the url and clicks based on url unto the local state', async () => {
+    await renderedInstance.filterUrl(
       {
-        x: 200,
-        y: 200,
-        clientwidth: window.innerWidth,
-        clientheight: window.innerHeight,
-        referrer: 'www.google.com',
-        page: window.location.pathname
-      },
-      {
-        x: 400,
-        y: 400,
-        clientwidth: window.innerWidth,
-        clientheight: window.innerHeight,
-        referrer: 'www.reddit.com',
-        page: window.location.pathname
-      },
-      {
-        x: 750,
-        y: 750,
-        clientwidth: window.innerWidth,
-        clientheight: window.innerHeight,
-        referrer: 'www.espn.com',
-        page: window.location.pathname
+        target: {
+          value: 'espn.com',
+          checked: true
+        }
       }
-    ]
-    wrappedComponent.setState({clicks: wrappedComponentClicksState})
+    )
+    expect(renderedInstance.state.urls).to.be.deep.equal(['espn.com'])
+    expect(renderedInstance.state.clicks).to.be.deep.equal(wrappedComponentClicksState.filter(click => click.referrer.includes('espn.com')))
   })
+})
 
-    it('renders ScatterPlot component on selecting option', () => {
-      expect(wrappedComponent.find(Scatter).length).to.be.equal(1)
-  })
-    it('Initial state of ScatterPlot clicks is the adjustedClicks prop passed from <HOC />', () => {
-      let scatterClicks = wrappedComponent.instance().filterClicks(wrappedComponent.state().clicks,  container, window.innerWidth)
-      let scatter = shallow(<Scatter clicks = {scatterClicks} />)
-      expect(scatter.state().clicks).to.be.equal(scatterClicks)
+describe('Props passed from <WrappedComponent /> to <Scatter /> ', () => {
+    let wrappedComponent = shallow(<WrappedComponent />)
+    let wrappedComponentInstance = wrappedComponent.instance()
+    let sandbox = sinon.sandbox.create()
+    let container = wrappedComponent.find('.flex-container')
+    let passedClicks = wrappedComponentInstance.filterClicks(wrappedComponentClicksState, container, window.innerWidth)
+    let scatterComponent = shallow(<Scatter clicks = {passedClicks}/>)
+
+    it('initial state of <Scatter /> clicks is adjusted clicks passed from <WrappedComponent />', () => {
+        expect(scatterComponent.instance().state.clicks).to.be.deep.equal(passedClicks)
     })
 })
+
+
+

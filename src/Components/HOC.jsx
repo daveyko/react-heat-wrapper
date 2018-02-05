@@ -23,7 +23,7 @@ const HOCWrapper  = (clicksAPI, id) => (WrappedComponent) => {
 			this.onScreenResize = this.onScreenResize.bind(this)
 			this.closeGraph = this.closeGraph.bind(this)
 			this.filterClicks  = this.filterClicks.bind(this)
-    }
+		}
 
 		componentDidMount() {
 			localStorage.clear()
@@ -34,13 +34,13 @@ const HOCWrapper  = (clicksAPI, id) => (WrappedComponent) => {
 				})
 			}
 			//axios request to get clicks from database and persist them on the browser session, afterwards placing them on the component's local state
-			axios.get(clicksAPI)
-				.then((clicks => {
+			return axios.get(clicksAPI)
+			.then((clicks => {
 					localStorage.setItem(this.state.localStorageKey, JSON.stringify(clicks.data))
 					return clicks.data
-				}))
-				.then((clicksOnMount) => {
-					this.setState({
+			}))
+			.then((clicksOnMount) => {
+						this.setState({
 						clicks: clicksOnMount,
 					})
 				})
