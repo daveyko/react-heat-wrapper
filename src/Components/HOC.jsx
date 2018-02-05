@@ -152,7 +152,7 @@ const HOCWrapper  = (clicksAPI, id) => (WrappedComponent) => {
 					<div className = {style.parent}>
           	{this.state.graph === 'Scatter' ? <div className = {style.HOCWrapper}>
 							<Scatterplot filterClicks = {this.filterClicks} onResizeClicks = {onResizeClicks} clicks = {adjustedClicks} removeGraph = {this.closeGraph} onScreenResize = {this.onScreenResize}  />
-							</div> : 	<div className = "HOCWrapper">
+							</div> : 	<div className = {style.HOCWrapper}>
 							<HeatMap filterClicks = {this.filterClicks} onResizeClicks = {onResizeClicks} clicks = {adjustedClicks}  removeGraph = {this.closeGraph} onScreenResize = {this.onScreenResize} />
 						</div>
 						}
