@@ -137,5 +137,10 @@ To activate the heatmap, type 'viewHeatMap(id)' in the console, and select from 
 view demo at:
 www.github.com/daveyko/react-heat-wrapper
 
-![Alt Text](heat.gif)
+<br />
+<p align="center">
+  <img src="heat.gif" height="300">
+</p>
+<br />
+
 
