@@ -1,8 +1,9 @@
-import Heat from '../src/Heat.jsx'
-import {shallow} from 'enzyme';
-import {jsdom, window, global, Enzyme} from './index'
-import chai, {expect} from 'chai';
 import React from 'react'
+import Enzyme, {shallow} from 'enzyme';
+import {expect} from 'chai'
+import Adapter from 'enzyme-adapter-react-16';
+Enzyme.configure({ adapter: new Adapter(), disableLifecycleMethods: true });
+import Heat from '../src/Components/Heat.jsx'
 
 
 describe('<Heat /> reduceClicks function', () => {

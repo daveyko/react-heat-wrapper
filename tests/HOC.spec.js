@@ -1,11 +1,12 @@
 import React from 'react'
-import axios from 'axios'
-import {jsdom, window, global, Enzyme} from './index'
-import chai, {expect} from 'chai';
-import {shallow, mount} from 'enzyme';
+import Enzyme, {shallow} from 'enzyme';
+import chai, {expect} from 'chai'
 import sinon from 'sinon';
 import sinonChai from 'sinon-chai'
-import HOC from '../src/HOC.jsx'
+import Adapter from 'enzyme-adapter-react-16';
+Enzyme.configure({ adapter: new Adapter(), disableLifecycleMethods: true });
+import axios from 'axios'
+import HOC from '../src/Components/HOC.jsx'
 
 
 const ComponentToWrap = () => {
@@ -16,7 +17,7 @@ const ComponentToWrap = () => {
 let testAPI = '/api/clicks'
 let WrappedComponent = HOC(testAPI, 1)(ComponentToWrap)
 
-describe('<WrappedComponent /> intial state before mounting', () => {
+describe('<WrappedComponent /> initial state before mounting', () => {
     let wrappedComponent
     let initialState = {
       graph: 'Hide',
@@ -35,11 +36,9 @@ describe('<WrappedComponent /> intial state before mounting', () => {
     })
 })
 
-describe('<WrappedComponent /> clicks after component mounts', () => {
+describe('<WrappedComponent /> componentDidMount', () => {
     let renderedInstance,
         renderedElement,
-        fakePromise1,
-        fakePromise2,
         sandbox
 
     let fakeClicksArr =  {
@@ -78,16 +77,7 @@ describe('<WrappedComponent /> clicks after component mounts', () => {
       sandbox = sinon.sandbox.create();
       renderedElement = shallow(<WrappedComponent />)
       renderedInstance = renderedElement.instance()
-
-      fakePromise1 = new Promise(resolve => {
-        resolve(fakeClicksArr)
-      })
-
-      fakePromise2 = new Promise(resolve => {
-        resolve(fakeClicksArr.data)
-      })
-
-      sandbox.stub(axios, 'get').returns(fakePromise1)
+      sandbox.stub(axios, 'get').resolves(fakeClicksArr)
       sandbox.stub(renderedInstance, 'setState')
     })
 
@@ -95,36 +85,14 @@ describe('<WrappedComponent /> clicks after component mounts', () => {
       sandbox.restore()
     })
 
-    describe('When component mounts, an axios request is sent to specified API endpoint', () => {
-      beforeEach(() => {
-        renderedInstance.componentDidMount()
-      })
-
-      it('should have sent an request to the API endpoint', () => {
-        expect(axios.get).to.have.callCount(1)
-        expect(axios.get).to.be.calledWith(testAPI)
-      })
-
-      describe('Given the axios request has completed successfully', () => {
-
-        let clicksOnMount
-
-        beforeEach(done => {
-          fakePromise1
-          .then((res1) => {
-            return res1.data
-          })
-          .then((res2) => {
-            clicksOnMount = res2
-            done()
-          })
-        })
-        it('sets the component state with the result', () => {
-          expect(renderedInstance.setState).to.have.callCount(1)
-          expect(renderedInstance.setState).to.be.calledWith({clicks: clicksOnMount})
-        })
-
-      })
+    it('componentDidMount stores clicks in local storage', async () => {
+      await renderedInstance.componentDidMount()
+      expect(JSON.parse(localStorage.getItem(renderedInstance.state.localStorageKey))).to.deep.equal(fakeClicksArr.data)
     })
+
+    it('componentDidMount sets state with clicks', async () => {
+      await renderedInstance.componentDidMount()
+      expect(renderedInstance.setState).to.be.calledWith({clicks: fakeClicksArr.data})
+  })
 })
 
