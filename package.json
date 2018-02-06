@@ -1,6 +1,6 @@
 {
   "name": "react-heat-wrapper",
-  "version": "0.1.6",
+  "version": "0.1.8",
   "description": "",
   "main": "public/bundle.js",
   "scripts": {

@@ -6,7 +6,7 @@
 }
 
 .dropdown{
-  z-index: 5;
+  z-index: 999999;
   position: absolute;
   top: 0px;
   left: 0px;
@@ -18,7 +18,7 @@
 
 .HOCWrapper{
 	background: rgba(128,128,128,0.6);
-	z-index: 1;
+	z-index: 99999;
 	position: absolute;
 	height: 100%;
 	top: 0px;

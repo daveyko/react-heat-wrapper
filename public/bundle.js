@@ -22471,7 +22471,7 @@ var HOCWrapper = function HOCWrapper(clicksAPI, id) {
 						});
 					};
 					//axios request to get clicks from database and persist them on the browser session, afterwards placing them on the component's local state
-					_axios2.default.get(clicksAPI).then(function (clicks) {
+					return _axios2.default.get(clicksAPI).then(function (clicks) {
 						localStorage.setItem(_this2.state.localStorageKey, JSON.stringify(clicks.data));
 						return clicks.data;
 					}).then(function (clicksOnMount) {
@@ -22633,7 +22633,7 @@ var HOCWrapper = function HOCWrapper(clicksAPI, id) {
 							_react2.default.createElement(_Scatter2.default, { filterClicks: this.filterClicks, onResizeClicks: onResizeClicks, clicks: adjustedClicks, removeGraph: this.closeGraph, onScreenResize: this.onScreenResize })
 						) : _react2.default.createElement(
 							'div',
-							{ className: 'HOCWrapper' },
+							{ className: _HOC2.default.HOCWrapper },
 							_react2.default.createElement(_Heat2.default, { filterClicks: this.filterClicks, onResizeClicks: onResizeClicks, clicks: adjustedClicks, removeGraph: this.closeGraph, onScreenResize: this.onScreenResize })
 						),
 						_react2.default.createElement(WrappedComponent, this.props)
@@ -25005,13 +25005,25 @@ var Scatterplot = function (_React$Component) {
 		_this.showAll = _this.showAll.bind(_this);
 		_this.onClose = _this.onClose.bind(_this);
 		_this.selectOption = _this.selectOption.bind(_this);
+		_this.promisifySetState = _this.promisifySetState.bind(_this);
 		return _this;
 	}
-
-	//When passed props changes, we need to trigger a re-render of the scatterplot. The passed props may be this.props.onResizeClicks when the viewport has been modified, otherwise it will be this.props.clicks
+	//allows chaining of setState instead of callbacks
 
 
 	_createClass(Scatterplot, [{
+		key: 'promisifySetState',
+		value: function promisifySetState(state) {
+			var _this2 = this;
+
+			return new Promise(function (resolve) {
+				_this2.setState(state, resolve);
+			});
+		}
+
+		//When passed props changes, we need to trigger a re-render of the scatterplot. The passed props may be this.props.onResizeClicks when the viewport has been modified, otherwise it will be this.props.clicks
+
+	}, {
 		key: 'componentWillReceiveProps',
 		value: function componentWillReceiveProps(nextProps) {
 			if (nextProps.clicks !== this.props.clicks || nextProps.onResizeClicks !== this.props.onResizeClicks) {
@@ -25031,15 +25043,15 @@ var Scatterplot = function (_React$Component) {
 	}, {
 		key: 'componentDidMount',
 		value: function componentDidMount() {
-			var _this2 = this;
+			var _this3 = this;
 
 			var top10Urls = this.findTopTenSites(this.props.clicks);
 			this.setState({
 				top10Urls: top10Urls
 			});
 			window.addEventListener('resize', function () {
-				if (_this2.size) {
-					_this2.props.onScreenResize(window.innerWidth, _this2.size.offsetHeight, _this2.size.offsetWidth);
+				if (_this3.size) {
+					_this3.props.onScreenResize(window.innerWidth, _this3.size.offsetHeight, _this3.size.offsetWidth);
 				}
 			});
 		}
@@ -25084,35 +25096,35 @@ var Scatterplot = function (_React$Component) {
 	}, {
 		key: 'filterUrl',
 		value: function filterUrl(e) {
-			var _this3 = this;
+			var _this4 = this;
 
 			var clicks = this.props.clicks || this.props.filterClicks(this.props.onResizeClicks, this.size, window.innerWidth);
 			if (e.target.checked) {
-				this.setState({
+				return this.promisifySetState({
 					urls: this.state.urls.concat(e.target.value)
-				}, function () {
-					_this3.setState({
+				}).then(function () {
+					return _this4.promisifySetState({
 						clicks: clicks.filter(function (click) {
-							return _this3.state.urls.filter(function (url) {
+							return _this4.state.urls.filter(function (url) {
 								return click.referrer.includes(url);
 							}).length > 0;
 						})
 					});
-				});
+				}).catch(console.error);
 			} else {
-				this.setState({
+				return this.promisifySetState({
 					urls: this.state.urls.filter(function (url) {
 						return url !== e.target.value;
 					})
-				}, function () {
-					_this3.setState({
+				}).then(function () {
+					return _this4.promisifySetState({
 						clicks: clicks.filter(function (click) {
-							return _this3.state.urls.filter(function (url) {
+							return _this4.state.urls.filter(function (url) {
 								return click.referrer.includes(url);
 							}).length > 0;
 						})
 					});
-				});
+				}).catch(console.error);
 			}
 		}
 
@@ -25157,7 +25169,7 @@ var Scatterplot = function (_React$Component) {
 	}, {
 		key: 'render',
 		value: function render() {
-			var _this4 = this;
+			var _this5 = this;
 
 			var clicks = this.state.clicks;
 			var size = this.size ? this.size.offsetHeight : window.innerHeight;
@@ -25174,9 +25186,9 @@ var Scatterplot = function (_React$Component) {
 						cx: datapoint.x,
 						cy: datapoint.y,
 						r: 5,
-						fill: _this4.state.top10Urls.filter(function (shortened) {
+						fill: _this5.state.top10Urls.filter(function (shortened) {
 							return datapoint.referrer.includes(shortened);
-						}).length >= 1 ? color(_this4.state.top10Urls.indexOf(_this4.state.top10Urls.filter(function (shortened) {
+						}).length >= 1 ? color(_this5.state.top10Urls.indexOf(_this5.state.top10Urls.filter(function (shortened) {
 							return datapoint.referrer.includes(shortened);
 						})[0])) : 'black',
 						'data-count': datapoint.count,
@@ -25197,7 +25209,7 @@ var Scatterplot = function (_React$Component) {
 			return _react2.default.createElement(
 				'div',
 				{ className: _Scatter2.default.HOCSvgWrapper, ref: function ref(size) {
-						return _this4.size = size;
+						return _this5.size = size;
 					} },
 				_react2.default.createElement(
 					'div',
@@ -25212,7 +25224,7 @@ var Scatterplot = function (_React$Component) {
 								return _react2.default.createElement(
 									'div',
 									{ key: i },
-									_react2.default.createElement('input', { type: 'checkbox', id: site, name: site, value: site, onChange: _this4.filterUrl }),
+									_react2.default.createElement('input', { type: 'checkbox', id: site, name: site, value: site, onChange: _this5.filterUrl }),
 									_react2.default.createElement(
 										'label',
 										null,
@@ -63831,7 +63843,7 @@ exports = module.exports = __webpack_require__(108)(false);
 
 
 // module
-exports.push([module.i, ".Heat__clickData___2CF5H:hover text{\n\tdisplay: inline;\n\tposition: absolute;\n\tz-index: 9999;\n}\n\n .Heat__HOCSvgWrapper___2fncF {\n  width: 100%;\n  height: 100%;\n  position: relative;\n }\n\n\n .Heat__selectOption___3Nbd2{\n  z-index: 99;\n  position: absolute;\n  top: 0px;\n  left: 0px;\n }\n\n .Heat__HOCSvg___3aWus{\n\tposition:absolute;\n\twidth: 100%;\n\theight: 100%;\n\tdisplay: block;\n}\n\n.Heat__countText___2-XVa{\n  text-anchor: end;\n  fill: white;\n  font-size: 20px;\n}\n\n", ""]);
+exports.push([module.i, ".Heat__clickData___2CF5H:hover text{\n\tdisplay: inline;\n\tposition: absolute;\n\tz-index: 9999;\n}\n\ntext{\n  display: none;\n}\nrect{\n  opacity: 0.6;\n}\n .Heat__HOCSvgWrapper___2fncF {\n  width: 100%;\n  height: 100%;\n  position: relative;\n }\n\n\n .Heat__selectOption___3Nbd2{\n  z-index: 99;\n  position: absolute;\n  top: 0px;\n  left: 0px;\n }\n\n .Heat__HOCSvg___3aWus{\n\tposition:absolute;\n\twidth: 100%;\n\theight: 100%;\n\tdisplay: block;\n}\n\n.Heat__countText___2-XVa{\n  text-anchor: end;\n  fill: white;\n  font-size: 20px;\n}\n\n", ""]);
 
 // exports
 exports.locals = {
@@ -81029,7 +81041,7 @@ exports = module.exports = __webpack_require__(108)(false);
 
 
 // module
-exports.push([module.i, ".HOC__flex-container___35MYI{\n\tdisplay: flex;\n\tflex-direction: column;\n  justify-content: flex-start;\n  position: relative;\n}\n\n.HOC__dropdown___2vtb3{\n  z-index: 5;\n  position: absolute;\n  top: 0px;\n  left: 0px;\n}\n\n.HOC__parent___3rOLX{\n  position: relative;\n}\n\n.HOC__HOCWrapper___1fTLc{\n\tbackground: rgba(128,128,128,0.6);\n\tz-index: 1;\n\tposition: absolute;\n\theight: 100%;\n\ttop: 0px;\n\tleft: 0px;\n\twidth: 100%;\n}\n", ""]);
+exports.push([module.i, ".HOC__flex-container___35MYI{\n\tdisplay: flex;\n\tflex-direction: column;\n  justify-content: flex-start;\n  position: relative;\n}\n\n.HOC__dropdown___2vtb3{\n  z-index: 999999;\n  position: absolute;\n  top: 0px;\n  left: 0px;\n}\n\n.HOC__parent___3rOLX{\n  position: relative;\n}\n\n.HOC__HOCWrapper___1fTLc{\n\tbackground: rgba(128,128,128,0.6);\n\tz-index: 99999;\n\tposition: absolute;\n\theight: 100%;\n\ttop: 0px;\n\tleft: 0px;\n\twidth: 100%;\n}\n", ""]);
 
 // exports
 exports.locals = {
